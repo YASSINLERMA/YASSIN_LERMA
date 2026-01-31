@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Clima Actual - Coahuila</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+header { background:#004e92; color:white; padding:20px; font-size:26px; text-align:center; border-radius:8px; }
+.container { width:95%; max-width:700px; margin:20px auto; background:white; border-radius:12px; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.2); }
+select { width:100%; padding:12px; border-radius:8px; font-size:16px; margin-bottom:20px; }
+.card { background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px; border-left:5px solid #004e92; }
+h2 { margin:0 0 10px 0; color:#004e92; }
+button { padding:12px 20px; background:#00b894; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition: transform .2s, box-shadow .2s; margin-right:10px; }
+button:hover { transform: scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+.export-buttons { margin-bottom:20px; }
+#status { margin-top:10px; font-style:italic; color:#333; text-align:center; }
+body { font-family:Arial,sans-serif; background:#eef2f3; }
+</style>
+</head>
+<body>
+<header>Clima Actual - Coahuila</header>
+<div class="container">
+  <select id="municipio"></select>
+
+  <div class="export-buttons">
+    <button onclick="exportExcelAll()">Exportar Todos a Excel</button>
+    <button onclick="exportPDFAll()">Exportar Todos a PDF</button>
+  </div>
+
+  <div id="status">Selecciona un municipio para ver su clima actual.</div>
+
+  <div id="current"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+
+// ----------------------------------
+//  🕒 FUNCIÓN FECHA + HORA DESCARGA
+// ----------------------------------
+function getDateTimeString() {
+    const now = new Date();
+    const fecha = now.toISOString().split("T")[0];       // YYYY-MM-DD
+    const hora = now.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+    return `${fecha} ${hora}`;
+}
+
+// ---------------- REGIONES Y MUNICIPIOS ----------------
+const regiones = {
+  "Sureste": ["Arteaga","Gral. Cepeda","Parras","Ramos Arizpe","Saltillo"],
+  "Laguna": ["Francisco I. Madero","Matamoros","San Pedro","Torreón","Viesca"],
+  "Desierto": ["Abasolo","Candela","Castaños","Cuatrociénegas","Escobedo","Frontera",
+               "Lamadrid","Monclova","Nadadores","Ocampo","San Buenaventura","Sacramento","Sierra Mojada"],
+  "Carbonífera": ["Juárez","Múzquiz","Progreso","Sabinas","San Juan de Sabinas"],
+  "Norte": ["Acuña","Allende","Guerrero","Hidalgo","Jiménez","Morelos","Nava",
+            "Piedras Negras","Villa Unión","Zaragoza"]
+};
+
+const municipios = [
+ {n:"Abasolo",lat:27.2,lon:-101.4}, {n:"Acuña",lat:29.3,lon:-101.0}, {n:"Allende",lat:28.3,lon:-100.8},
+ {n:"Arteaga",lat:25.43,lon:-100.85}, {n:"Candela",lat:26.8,lon:-100.7}, {n:"Castaños",lat:26.8,lon:-101.4},
+ {n:"Cuatrociénegas",lat:26.98,lon:-102.05}, {n:"Escobedo",lat:27.3,lon:-101.4}, {n:"Francisco I. Madero",lat:25.77,lon:-103.27},
+ {n:"Frontera",lat:26.9,lon:-101.4}, {n:"Gral. Cepeda",lat:25.38,lon:-101.5}, {n:"Guerrero",lat:28.2,lon:-100.9},
+ {n:"Hidalgo",lat:29.0,lon:-100.9}, {n:"Jiménez",lat:27.0,lon:-101.1}, {n:"Juárez",lat:27.1,lon:-100.7},
+ {n:"Lamadrid",lat:27.0,lon:-101.6}, {n:"Matamoros",lat:25.53,lon:-103.25}, {n:"Monclova",lat:26.9,lon:-101.4},
+ {n:"Morelos",lat:28.4,lon:-100.9}, {n:"Múzquiz",lat:27.88,lon:-101.22}, {n:"Nadadores",lat:27.03,lon:-101.58},
+ {n:"Nava",lat:28.42,lon:-100.77}, {n:"Ocampo",lat:27.3,lon:-102.4}, {n:"Parras",lat:25.44,lon:-102.18},
+ {n:"Piedras Negras",lat:28.7,lon:-100.52}, {n:"Progreso",lat:27.45,lon:-101.01}, {n:"Ramos Arizpe",lat:25.55,lon:-100.95},
+ {n:"Sabinas",lat:27.85,lon:-101.45}, {n:"Sacramento",lat:26.9,lon:-101.85}, {n:"Saltillo",lat:25.42,lon:-101.0},
+ {n:"San Buenaventura",lat:27.17,lon:-101.53}, {n:"San Juan de Sabinas",lat:27.95,lon:-101.23}, {n:"San Pedro",lat:25.76,lon:-103.0},
+ {n:"Sierra Mojada",lat:27.28,lon:-103.6}, {n:"Torreón",lat:25.54,lon:-103.45}, {n:"Viesca",lat:25.33,lon:-102.81},
+ {n:"Villa Unión",lat:28.22,lon:-100.72}, {n:"Zaragoza",lat:28.48,lon:-100.92}
+];
+
+// ---------------- SELECT MUNICIPIOS ----------------
+let select = document.getElementById("municipio");
+select.innerHTML = "<option value=''>Selecciona un municipio…</option>" +
+ municipios.map(m=>`<option data-lat='${m.lat}' data-lon='${m.lon}'>${m.n}</option>`).join("");
+
+let lastData = {};
+
+// ---------------- SELECCIONAR MUNICIPIO ----------------
+select.addEventListener("change", async ()=>{
+ let opt = select.options[select.selectedIndex];
+ if(!opt.value) return;
+ let lat = opt.dataset.lat;
+ let lon = opt.dataset.lon;
+ const status = document.getElementById("status");
+ status.innerText = `Cargando datos de ${opt.value}...`;
+
+ let url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&current_weather=true&hourly=precipitation_probability`;
+ let res = await fetch(url);
+ let data = await res.json();
+ lastData[opt.value] = data;
+
+ renderCurrent(opt.value, data);
+ status.innerText = `Datos de ${opt.value} cargados.`;
+});
+
+// ---------------- RENDER CLIMA ACTUAL ----------------
+function renderCurrent(name, data){
+ const c = data.current_weather;
+ const horaIndex = data.hourly.time.indexOf(c.time);
+ const probLluvia = horaIndex !== -1 ? data.hourly.precipitation_probability[horaIndex] : 0;
+
+ document.getElementById("current").innerHTML = `<div class='card'>
+ <h2>${name}</h2>
+ <p><b>Temperatura:</b> ${c.temperature}°C</p>
+ <p><b>Viento:</b> ${c.windspeed} km/h</p>
+ <p><b>Probabilidad de lluvia:</b> ${probLluvia}%</p>
+ </div>`;
+}
+
+// ---------------- FETCH TODOS ----------------
+async function fetchAllCurrent(){
+ const results = [];
+ for(const m of municipios){
+   const url = `https://api.open-meteo.com/v1/forecast?latitude=${m.lat}&longitude=${m.lon}&timezone=auto&current_weather=true&hourly=precipitation_probability`;
+   const res = await fetch(url);
+   const data = await res.json();
+   results.push({municipio:m.n,data});
+ }
+ return results;
+}
+
+// ---------------- exportar excel ----------------
+async function exportExcelAll(){
+ const allData = await fetchAllCurrent();
+ const wb = XLSX.utils.book_new();
+ const fechaHora = getDateTimeString();
+
+ for(const region in regiones){
+   const rows = [["Municipio","Temperatura °C","Viento km/h","Prob. lluvia %","Fecha de descarga"]];
+
+   regiones[region].forEach(muni=>{
+     const item = allData.find(x=>x.municipio === muni);
+     if(!item) return;
+     const c = item.data.current_weather;
+     const idx = item.data.hourly.time.indexOf(c.time);
+     const prob = idx!==-1 ? item.data.hourly.precipitation_probability[idx] : 0;
+
+     rows.push([muni,c.temperature,c.windspeed,prob,fechaHora]);
+   });
+
+   const ws = XLSX.utils.aoa_to_sheet(rows);
+   XLSX.utils.book_append_sheet(wb,ws,region);
+ }
+
+ XLSX.writeFile(wb,`clima_diario_${fechaHora}.xlsx`);
+}
+
+// ---------------- exportar pdf ----------------
+async function exportPDFAll(){
+ const allData = await fetchAllCurrent();
+ const fechaHora = getDateTimeString();
+
+ const { jsPDF } = window.jspdf;
+ const pdf = new jsPDF();
+ let y = 10;
+
+ pdf.setFontSize(20);
+ pdf.text("Clima Actual – Regiones de Coahuila",10,y);
+ y+=10;
+
+ pdf.setFontSize(10);
+ pdf.text(`Fecha y hora de descarga: ${fechaHora}`,10,y);
+ y+=15;
+
+ for(const region in regiones){
+   pdf.setFontSize(16);
+   pdf.text(region,10,y);
+   y+=10;
+
+   regiones[region].forEach(muni=>{
+     const item = allData.find(x=>x.municipio === muni);
+     if(!item) return;
+     const c = item.data.current_weather;
+     const idx = item.data.hourly.time.indexOf(c.time);
+     const prob = idx!==-1 ? item.data.hourly.precipitation_probability[idx] : 0;
+
+     pdf.setFontSize(12);
+     pdf.text(`${muni}:  Temp ${c.temperature}°C  | Viento ${c.windspeed} km/h  | Lluvia ${prob}%`,10,y);
+     y+=8;
+
+     if(y>280){ pdf.addPage(); y=10; }
+   });
+
+   y+=8;
+   if(y>280){ pdf.addPage(); y=10; }
+ }
+
+ pdf.save(`clima_diario_${fechaHora}.pdf`);
+}
+
+</script>
+</body>
+</html>
