@@ -5,29 +5,128 @@
 <title>Clima Actual - Coahuila</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
-header { background:#004e92; color:white; padding:20px; font-size:26px; text-align:center; border-radius:8px; }
-.container { width:95%; max-width:700px; margin:20px auto; background:white; border-radius:12px; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.2); }
-select { width:100%; padding:12px; border-radius:8px; font-size:16px; margin-bottom:20px; }
-.card { background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px; border-left:5px solid #004e92; }
-h2 { margin:0 0 10px 0; color:#004e92; }
-button { padding:12px 20px; background:#00b894; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition: transform .2s, box-shadow .2s; margin-right:10px; }
-button:hover { transform: scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
-.export-buttons { margin-bottom:20px; }
-#status { margin-top:10px; font-style:italic; color:#333; text-align:center; }
-body { font-family:Arial,sans-serif; background:#eef2f3; }
+  /* Base Estilo Oscuro */
+  body { 
+    font-family: 'Inter', Arial, sans-serif; 
+    background: #0b0f1a; /* Fondo profundo como la imagen */
+    color: #f1f5f9;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: screen;
+  }
+
+  header { 
+    background: rgba(255, 255, 255, 0.05);
+    color: white; 
+    padding: 30px; 
+    font-size: 28px; 
+    font-weight: 800;
+    text-align: center; 
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .container { 
+    width: 90%; 
+    max-width: 600px; 
+    margin: 40px auto; 
+    background: rgba(30, 41, 59, 0.5); /* Slate 800 transparente */
+    border-radius: 2.5rem; 
+    padding: 30px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Estilo Select */
+  select { 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 1rem; 
+    font-size: 16px; 
+    margin-bottom: 25px; 
+    background: #0b0f1a;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    cursor: pointer;
+  }
+
+  select:focus {
+    border-color: #00b894;
+  }
+
+  /* Tarjeta de Clima */
+  .card { 
+    background: rgba(255, 255, 255, 0.05); 
+    padding: 25px; 
+    border-radius: 1.5rem; 
+    margin-bottom: 20px; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+
+  h2 { 
+    margin: 0 0 15px 0; 
+    color: #00b894; /* Verde Codixs */
+    font-size: 24px;
+  }
+
+  /* Botones Modernos */
+  .export-buttons { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 25px; 
+  }
+
+  button { 
+    flex: 1;
+    padding: 14px; 
+    background: #00b894; 
+    color: white; 
+    border: none; 
+    border-radius: 1rem; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: all 0.3s ease; 
+  }
+
+  button:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 20px rgba(0, 184, 148, 0.3);
+    background: #00a383;
+  }
+
+  #status { 
+    margin-top: 15px; 
+    font-size: 14px;
+    color: #94a3b8; 
+    text-align: center; 
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
 </head>
 <body>
-<header>Clima Actual - Coahuila</header>
+
+<header>Clima Actual – Coahuila</header>
+
 <div class="container">
   <select id="municipio"></select>
 
   <div class="export-buttons">
-    <button onclick="exportExcelAll()">Exportar Todos a Excel</button>
-    <button onclick="exportPDFAll()">Exportar Todos a PDF</button>
+    <button onclick="exportExcelAll()">Excel </button>
+    <button onclick="exportPDFAll()">PDF </button>
   </div>
 
-  <div id="status">Selecciona un municipio para ver su clima actual.</div>
+  <div id="status">Selecciona un municipio para consultar.</div>
 
   <div id="current"></div>
 </div>
@@ -36,18 +135,15 @@ body { font-family:Arial,sans-serif; background:#eef2f3; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+// --- TU LÓGICA DE JAVASCRIPT SIGUE AQUÍ SIN CAMBIOS ---
 
-// ----------------------------------
-//  🕒 FUNCIÓN FECHA + HORA DESCARGA
-// ----------------------------------
 function getDateTimeString() {
     const now = new Date();
-    const fecha = now.toISOString().split("T")[0];       // YYYY-MM-DD
-    const hora = now.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+    const fecha = now.toISOString().split("T")[0];
+    const hora = now.toTimeString().split(" ")[0].replace(/:/g, "-");
     return `${fecha} ${hora}`;
 }
 
-// ---------------- REGIONES Y MUNICIPIOS ----------------
 const regiones = {
   "Sureste": ["Arteaga","Gral. Cepeda","Parras","Ramos Arizpe","Saltillo"],
   "Laguna": ["Francisco I. Madero","Matamoros","San Pedro","Torreón","Viesca"],
@@ -74,14 +170,12 @@ const municipios = [
  {n:"Villa Unión",lat:28.22,lon:-100.72}, {n:"Zaragoza",lat:28.48,lon:-100.92}
 ];
 
-// ---------------- SELECT MUNICIPIOS ----------------
 let select = document.getElementById("municipio");
 select.innerHTML = "<option value=''>Selecciona un municipio…</option>" +
  municipios.map(m=>`<option data-lat='${m.lat}' data-lon='${m.lon}'>${m.n}</option>`).join("");
 
 let lastData = {};
 
-// ---------------- SELECCIONAR MUNICIPIO ----------------
 select.addEventListener("change", async ()=>{
  let opt = select.options[select.selectedIndex];
  if(!opt.value) return;
@@ -99,7 +193,6 @@ select.addEventListener("change", async ()=>{
  status.innerText = `Datos de ${opt.value} cargados.`;
 });
 
-// ---------------- RENDER CLIMA ACTUAL ----------------
 function renderCurrent(name, data){
  const c = data.current_weather;
  const horaIndex = data.hourly.time.indexOf(c.time);
@@ -113,7 +206,6 @@ function renderCurrent(name, data){
  </div>`;
 }
 
-// ---------------- FETCH TODOS ----------------
 async function fetchAllCurrent(){
  const results = [];
  for(const m of municipios){
@@ -125,7 +217,6 @@ async function fetchAllCurrent(){
  return results;
 }
 
-// ---------------- exportar excel ----------------
 async function exportExcelAll(){
  const allData = await fetchAllCurrent();
  const wb = XLSX.utils.book_new();
@@ -151,7 +242,6 @@ async function exportExcelAll(){
  XLSX.writeFile(wb,`clima_diario_${fechaHora}.xlsx`);
 }
 
-// ---------------- exportar pdf ----------------
 async function exportPDFAll(){
  const allData = await fetchAllCurrent();
  const fechaHora = getDateTimeString();
@@ -193,7 +283,6 @@ async function exportPDFAll(){
 
  pdf.save(`clima_diario_${fechaHora}.pdf`);
 }
-
 </script>
 </body>
 </html>
