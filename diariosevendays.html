@@ -5,30 +5,141 @@
 <title>Pronóstico Diario - Clima Coahuila</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
-header { background:#004e92; color:white; padding:20px; font-size:26px; text-align:center; border-radius:8px; }
-.container { width:95%; max-width:1100px; margin:20px auto; background:white; border-radius:12px; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.2); }
-select { width:100%; padding:12px; border-radius:8px; font-size:16px; margin-bottom:20px; }
-.card { background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px; border-left:5px solid #004e92; }
-h2 { margin:0 0 10px 0; color:#004e92; }
-table { width:100%; border-collapse:collapse; margin-top:10px; }
-th,td { padding:10px; border-bottom:1px solid #ddd; text-align:center; }
-th { background:#004e92; color:white; }
-.export-buttons { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; justify-content:center; }
-button { padding:12px 20px; background:#0072ff; color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition: transform .2s, box-shadow .2s; }
-button:hover { transform: scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.2); }
-#status { margin-top:10px; font-style:italic; color:#333; text-align:center; }
-body { font-family:Arial,sans-serif; background:#eef2f3; }
-@media(max-width:600px){ table{font-size:12px;} }
+  /* Base Estilo Oscuro Premium */
+  body { 
+    font-family: 'Inter', Arial, sans-serif; 
+    background: #0b0f1a; 
+    color: #f1f5f9; 
+    margin: 0;
+    padding-bottom: 40px;
+  }
+
+  header { 
+    background: rgba(255, 255, 255, 0.05); 
+    color: white; 
+    padding: 30px; 
+    font-size: 28px; 
+    font-weight: 800;
+    text-align: center; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .container { 
+    width: 95%; 
+    max-width: 1100px; 
+    margin: 30px auto; 
+    background: rgba(30, 41, 59, 0.4); 
+    border-radius: 2rem; 
+    padding: 30px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Selectores y entradas */
+  select { 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 1rem; 
+    font-size: 16px; 
+    margin-bottom: 25px; 
+    background: #0f172a;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    cursor: pointer;
+    transition: border 0.3s;
+  }
+
+  select:focus { border-color: #00b894; }
+
+  /* Tarjetas y Contenedores de Información */
+  .card { 
+    background: rgba(255, 255, 255, 0.03); 
+    padding: 25px; 
+    border-radius: 1.5rem; 
+    margin-bottom: 25px; 
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.6s ease;
+  }
+
+  h2 { margin: 0 0 20px 0; color: #00b894; font-size: 24px; font-weight: 700; }
+
+  /* Tablas Optimizadas para Modo Oscuro */
+  table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 15px; 
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  th, td { 
+    padding: 14px; 
+    text-align: center; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  th { 
+    background: rgba(0, 184, 148, 0.15); 
+    color: #00b894; 
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+  /* Botones Modernos */
+  .export-buttons { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+  
+  button { 
+    padding: 14px 24px; 
+    background: #00b894; 
+    color: white; 
+    border: none; 
+    border-radius: 1rem; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  button:hover { 
+    transform: translateY(-2px); 
+    background: #00a383;
+    box-shadow: 0 10px 20px rgba(0, 184, 148, 0.2); 
+  }
+
+  #status { margin-top: 15px; font-style: italic; color: #94a3b8; text-align: center; font-size: 14px; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media(max-width:600px){ 
+    table { font-size: 11px; } 
+    th, td { padding: 8px 4px; }
+    header { font-size: 22px; padding: 20px; }
+  }
 </style>
 </head>
 <body>
-<header>Clima Coahuila - Pronóstico Diario</header>
+
+<header>Clima Coahuila – Pronóstico Diario</header>
+
 <div class="container">
   <select id="municipio"></select>
 
   <div class="export-buttons">
-    <button onclick="exportExcelDaysAll()">Exportar Pronóstico Diario Excel</button>
-    <button onclick="exportPDFDaysAll()">Exportar Pronóstico Diario PDF</button>
+    <button onclick="exportExcelDaysAll()">Exportar Excel (7 Días)</button>
+    <button onclick="exportPDFDaysAll()">Exportar PDF (7 Días)</button>
   </div>
 
   <div id="status">Selecciona un municipio para ver sus datos.</div>
@@ -37,12 +148,12 @@ body { font-family:Arial,sans-serif; background:#eef2f3; }
   <div id="daily"></div>
 </div>
 
-<!-- LIBRERÍAS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-// ------------------ FECHA Y HORA ------------------
+// --- TU LÓGICA DE JAVASCRIPT SIGUE AQUÍ SIN CAMBIOS ---
+
 function getDateTimeString() {
   const now = new Date();
   const fecha = now.toISOString().split("T")[0];
@@ -54,7 +165,6 @@ function getDateTimeHuman() {
   return new Date().toLocaleString();
 }
 
-// ------------------ ESTADO DEL CIELO ------------------
 function estadoClima(code){
   if([0].includes(code)) return "Despejado";
   if([1,2].includes(code)) return "Parcialmente Nublado";
@@ -66,7 +176,6 @@ function estadoClima(code){
   return "Sin datos";
 }
 
-// ------------------ MUNICIPIOS ------------------
 const municipios = [
  {n:"Abasolo",lat:27.2,lon:-101.4}, {n:"Acuña",lat:29.3,lon:-101.0}, {n:"Allende",lat:28.3,lon:-100.8},
  {n:"Arteaga",lat:25.43,lon:-100.85}, {n:"Candela",lat:26.8,lon:-100.7}, {n:"Castaños",lat:26.8,lon:-101.4},
@@ -83,7 +192,6 @@ const municipios = [
  {n:"Villa Unión",lat:28.22,lon:-100.72}, {n:"Zaragoza",lat:28.48,lon:-100.92}
 ];
 
-// ------------------ REGIONES ------------------
 const regiones = {
   "Sureste": ["Arteaga","Gral. Cepeda","Parras","Ramos Arizpe","Saltillo"],
   "Laguna": ["Francisco I. Madero","Matamoros","San Pedro","Torreón","Viesca"],
@@ -92,37 +200,28 @@ const regiones = {
   "Norte": ["Acuña","Allende","Guerrero","Hidalgo","Jiménez","Morelos","Nava","Piedras Negras","Villa Unión","Zaragoza"]
 };
 
-// ------------------ SELECT ------------------
 let select = document.getElementById("municipio");
 select.innerHTML = "<option value=''>Selecciona un municipio…</option>" +
  municipios.map(m=>`<option data-lat='${m.lat}' data-lon='${m.lon}'>${m.n}</option>`).join("");
 
 let lastData = null;
 
-// ------------------ SELECCIONAR MUNICIPIO ------------------
 select.addEventListener("change", async ()=>{
  let opt = select.options[select.selectedIndex];
  if(!opt.value) return;
-
  const status = document.getElementById("status");
  status.innerText = `Cargando datos de ${opt.value}...`;
-
  let lat = opt.dataset.lat;
  let lon = opt.dataset.lon;
-
  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&forecast_days=7&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_mean,windspeed_10m_max`;
  const res = await fetch(url);
  const data = await res.json();
-
  lastData = data;
-
  renderCurrent(data);
  renderDaily(data);
-
  status.innerText = `Datos de ${opt.value} cargados.`;
 });
 
-// ------------------ RENDER ACTUAL ------------------
 function renderCurrent(d){
  let c = d.current_weather;
  document.getElementById("current").innerHTML = `
@@ -135,10 +234,10 @@ function renderCurrent(d){
  </div>`;
 }
 
-// ------------------ RENDER DIARIO ------------------
 function renderDaily(d){
  let daily = d.daily;
- let out = `<div class='card'><h2>Pronóstico Diario</h2>
+ let out = `<div class='card'><h2>Pronóstico 7 Días</h2>
+ <div style="overflow-x:auto;">
  <table><tr><th>Fecha</th><th>Estado</th><th>Máx</th><th>Min</th><th>Lluvia %</th><th>Viento Máx</th></tr>`;
  for(let i=0;i<daily.time.length;i++){
    out+=`<tr>
@@ -150,14 +249,13 @@ function renderDaily(d){
      <td>${daily.windspeed_10m_max[i]}</td>
    </tr>`;
  }
- out+=`</table></div>`;
+ out+=`</table></div></div>`;
  document.getElementById("daily").innerHTML = out;
 }
 
-// ------------------ FETCH ALL ------------------
 async function fetchAllDaily(){
  const status = document.getElementById("status");
- status.innerText = "Obteniendo datos diarios de todos los municipios...";
+ status.innerText = "Obteniendo datos de todos los municipios...";
  const results=[];
  for(let i=0;i<municipios.length;i++){
    const m=municipios[i];
@@ -167,11 +265,10 @@ async function fetchAllDaily(){
    const data=await res.json();
    results.push({municipio:m.n,data});
  }
- status.innerText="Datos diarios de todos los municipios cargados.";
+ status.innerText="Carga completa.";
  return results;
 }
 
-// ------------------ AGRUPAR ------------------
 function agruparPorRegion(allData){
   const ordenado = {};
   for (const region in regiones) {
@@ -179,18 +276,14 @@ function agruparPorRegion(allData){
   }
   return ordenado;
 }
-// ------------------ EXPORT EXCEL POR REGION ------------------
+
 async function exportExcelDaysAll(){
  const allData = await fetchAllDaily();
  const dataPorRegion = agruparPorRegion(allData);
-
  const wb = XLSX.utils.book_new();
-
  for (const region in dataPorRegion) {
    const lista = dataPorRegion[region];
-
    const arr = [["Municipio","Fecha","Estado","Temp Máx","Temp Min","Prob. Lluvia %","Viento Máx km/h"]];
-
    lista.forEach(item => {
      const d = item.data.daily;
      for (let i = 0; i < d.time.length; i++) {
@@ -205,77 +298,55 @@ async function exportExcelDaysAll(){
        ]);
      }
    });
-
    const ws = XLSX.utils.aoa_to_sheet(arr);
    XLSX.utils.book_append_sheet(wb, ws, region);
  }
-
- // HOJA EXTRA CON FECHA
- const info = XLSX.utils.aoa_to_sheet([
-   ["Fecha y hora de descarga:"],
-   [getDateTimeHuman()]
- ]);
+ const info = XLSX.utils.aoa_to_sheet([["Fecha y hora de descarga:"], [getDateTimeHuman()]]);
  XLSX.utils.book_append_sheet(wb, info, "Información");
-
  XLSX.writeFile(wb, `clima_dias_por_region_${getDateTimeString()}.xlsx`);
 }
 
-// ------------------ EXPORT PDF POR REGION ------------------
 async function exportPDFDaysAll(){
  const allData = await fetchAllDaily();
  const dataPorRegion = agruparPorRegion(allData);
-
  const { jsPDF } = window.jspdf;
  const pdf = new jsPDF();
  let y = 10;
-
- // FECHA AL INICIO
  pdf.setFontSize(16);
  pdf.text("Fecha y hora de descarga:", 10, y);
  y += 8;
  pdf.setFontSize(12);
  pdf.text(getDateTimeHuman(), 10, y);
  y += 14;
-
  pdf.setFontSize(18);
  pdf.text("Pronóstico Diario por Región", 10, y);
  y += 12;
-
  for (const region in dataPorRegion) {
    pdf.setFontSize(16);
    pdf.text(`Región: ${region}`, 10, y);
    y += 8;
-
    const lista = dataPorRegion[region];
-
    lista.forEach(item => {
      pdf.setFontSize(14);
      pdf.text(item.municipio, 10, y);
      y += 6;
-
      const d = item.data.daily;
      pdf.setFontSize(10);
-
      for (let j = 0; j < d.time.length; j++) {
        pdf.text(
          `${d.time[j]} | ${estadoClima(d.weathercode[j])} | Máx: ${d.temperature_2m_max[j]}°C | Min: ${d.temperature_2m_min[j]}°C | Lluvia: ${d.precipitation_probability_mean[j]}% | Viento: ${d.windspeed_10m_max[j]} km/h`,
          10, y
        );
        y += 5;
-
        if (y > 280) { pdf.addPage(); y = 10; }
      }
-
      y += 6;
    });
-
    pdf.addPage();
    y = 20;
  }
-
  pdf.save(`clima_dias_por_region_${getDateTimeString()}.pdf`);
 }
-
 </script>
 </body>
 </html>
