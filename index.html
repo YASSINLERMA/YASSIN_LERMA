@@ -3,71 +3,65 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Clima</title>
+  <title>Codixs Weather</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    a{color:white};
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
+    /* Estilo para que el fondo se vea profundo como en la imagen */
+    .bg-dark-pro { background-color: #0b0f1a; }
   </style>
 </head>
-<body class="min-h-screen bg-[#0f172a] flex items-center justify-center p-4 text-slate-200">
+<body class="min-h-screen bg-dark-pro flex items-center justify-center p-6 text-white">
 
-  <main class="w-full max-w-2xl bg-slate-900/50 border border-slate-800 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-xl">
+  <main class="w-full max-w-md text-center">
     
-    <header class="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
-      <div class="text-center md:text-left">
-        <h1 class="text-5xl font-extrabold text-white tracking-tight">¡Bienvenido!</h1>
-        <p class="text-slate-400 mt-2 text-lg">¿Cómo quieres ver el clima hoy?</p>
+    <div class="flex justify-center mb-10">
+      <div class="bg-white p-6 rounded-full shadow-[0_0_40px_rgba(255,255,255,0.15)] ring-4 ring-white/5">
+        <img src="tu-logo.jpeg" class="w-32 h-32 md:w-40 md:h-40 object-contain" alt="Logo Codixs">
       </div>
+    </div>
+
+    <h1 class="text-4xl font-bold mb-2 tracking-tight">¡Bienvenido!</h1>
+    <p class="text-cyan-400 font-medium mb-12">Selecciona cómo deseas visualizar el clima.</p>
+
+    <div class="flex flex-col gap-4">
       
-      <div class="bg-white p-3 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:rotate-3 transition-transform">
-        <img src="tu-logo.jpeg" class="w-24 h-24 object-contain" alt="yassin lerma">
-      </div>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      
-      <a href="diariosevendays.html" class="group relative overflow-hidden bg-slate-800/40 border border-slate-700 p-6 rounded-3xl hover:border-green-500/50 transition-all duration-300">
-        <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
-            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" class="w-24 h-24" alt="">
+      <a href="diariosevendays.html" class="group flex items-center bg-white/5 border border-white/10 p-5 rounded-full hover:bg-white/10 hover:border-green-500/50 transition-all shadow-xl">
+        <div class="bg-white/10 p-2 rounded-lg ml-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" class="w-7 h-7" alt="Icon">
         </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/1163/1163661.png" class="w-12 h-12 mb-4 group-hover:animate-bounce" alt="" />
-        <h2 class="text-xl font-bold text-white">Semanal</h2>
-        <p class="text-sm text-slate-400">Pronóstico de 7 días</p>
+        <span class="text-xl font-bold ml-6 text-slate-200 group-hover:text-white">Clima Semanal</span>
       </a>
 
-      <a href="pertime.html" class="group relative overflow-hidden bg-slate-800/40 border border-slate-700 p-6 rounded-3xl hover:border-green-500/50 transition-all duration-300">
-        <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
-            <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="w-24 h-24" alt="">
+      <a href="pertime.html" class="group flex items-center bg-white/5 border border-white/10 p-5 rounded-full hover:bg-white/10 hover:border-green-500/50 transition-all shadow-xl">
+        <div class="bg-white/10 p-2 rounded-lg ml-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="w-7 h-7" alt="Icon">
         </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="w-12 h-12 mb-4 group-hover:animate-bounce" alt="" />
-        <h2 class="text-xl font-bold text-white">Por Horas</h2>
-        <p class="text-sm text-slate-400">Detalle paso a paso</p>
+        <span class="text-xl font-bold ml-6 text-slate-200 group-hover:text-white">Horario</span>
       </a>
 
-      <a href="actual.html" class="group relative overflow-hidden bg-slate-800/40 border border-slate-700 p-6 rounded-3xl hover:border-green-500/50 transition-all duration-300">
-        <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
-            <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" class="w-24 h-24" alt="">
+      <a href="actual.html" class="group flex items-center bg-white/5 border border-white/10 p-5 rounded-full hover:bg-white/10 hover:border-green-500/50 transition-all shadow-xl">
+        <div class="bg-white/10 p-2 rounded-lg ml-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" class="w-7 h-7" alt="Icon">
         </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" class="w-12 h-12 mb-4 group-hover:animate-bounce" alt="" />
-        <h2 class="text-xl font-bold text-white">Ahora</h2>
-        <p class="text-sm text-slate-400">Condiciones en vivo</p>
+        <span class="text-xl font-bold ml-6 text-slate-200 group-hover:text-white">Actual</span>
       </a>
 
-      <a href="regiones.html" class="group relative overflow-hidden bg-slate-800/40 border border-slate-700 p-6 rounded-3xl hover:border-green-500/50 transition-all duration-300">
-        <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
-            <img src="https://cdn-icons-png.flaticon.com/512/535/535239.png" class="w-24 h-24" alt="">
+      <a href="regiones.html" class="group flex items-center bg-white/5 border border-white/10 p-5 rounded-full hover:bg-white/10 hover:border-green-500/50 transition-all shadow-xl">
+        <div class="bg-white/10 p-2 rounded-lg ml-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/535/535239.png" class="w-7 h-7" alt="Icon">
         </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/535/535239.png" class="w-12 h-12 mb-4 group-hover:animate-bounce" alt="" />
-        <h2 class="text-xl font-bold text-white">Regiones</h2>
-        <p class="text-sm text-slate-400">Mapa de ubicaciones</p>
+        <span class="text-xl font-bold ml-6 text-slate-200 group-hover:text-white">Región</span>
       </a>
 
     </div>
 
-    <footer class="mt-10 pt-6 border-t border-slate-800 text-center">
-        <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold">yassin lerma 2026</p>
+    <footer class="mt-16">
+        <p class="text-xs text-slate-500 font-medium">Desarrollado por <a href="https://www.youtube.com/@CODIXS-EXE">Codixs</a> </p>
     </footer>
+
   </main>
 
 </body>
