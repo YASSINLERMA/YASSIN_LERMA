@@ -2,35 +2,132 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Clima Coahuila</title>
+<title>Codixs - Exportación por Región</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
- body { font-family: Arial, sans-serif; margin:0; background:#eef2f3; }
- header { background:#004e92; color:white; padding:20px; font-size:26px; text-align:center; }
- .container { width:95%; max-width:1100px; margin:20px auto; background:white; border-radius:12px; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.15); }
- .export-buttons { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
- button { padding:10px 20px; background:#004e92; color:white; border:none; border-radius:6px; cursor:pointer; }
- button:hover { background:#00386d; }
- #status { margin-top:10px; font-style:italic; color:#333; font-weight:bold; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+  
+  body { 
+    font-family: 'Inter', sans-serif; 
+    background: #0b0f1a; 
+    color: #f1f5f9; 
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header { 
+    background: rgba(255, 255, 255, 0.05); 
+    color: white; 
+    padding: 30px; 
+    font-size: 28px; 
+    font-weight: 800;
+    text-align: center; 
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    z-index: 10;
+  }
+
+  .container { 
+    width: 95%; 
+    max-width: 600px; 
+    margin-top: 120px;
+    background: rgba(30, 41, 59, 0.4); 
+    border-radius: 2.5rem; 
+    padding: 40px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    text-align: center;
+  }
+
+  .export-buttons { 
+    display: flex; 
+    flex-direction: column;
+    gap: 15px; 
+    margin-bottom: 25px; 
+  }
+
+  button { 
+    width: 100%;
+    padding: 16px; 
+    background: #00b894; 
+    color: white; 
+    border: none; 
+    border-radius: 1.2rem; 
+    cursor: pointer; 
+    font-weight: 800; 
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  button:hover { 
+    transform: translateY(-3px); 
+    background: #00a383;
+    box-shadow: 0 15px 30px rgba(0, 184, 148, 0.25); 
+  }
+
+  button:active {
+    transform: translateY(0);
+  }
+
+  #status { 
+    margin-top: 20px; 
+    font-style: italic; 
+    color: #00b894; 
+    font-weight: 600;
+    min-height: 24px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @media(max-width:600px){
+    .container { padding: 25px; margin-top: 100px; }
+    header { font-size: 22px; padding: 20px; }
+  }
 </style>
 </head>
 <body>
 
-<header>Clima Coahuila</header>
+<header>Clima Coahuila - Regiones</header>
+
 <div class="container">
+  <div class="flex justify-center mb-8">
+    <div class="bg-white p-3 rounded-2xl shadow-lg">
+      <img src="tu-logo.jpeg" class="w-24 h-24 object-contain" alt="Codixs Logo">
+    </div>
+  </div>
 
- <div class="export-buttons">
-   <button onclick="exportRegionPDF()">Exportar Región PDF</button>
-   <button onclick="exportRegionExcel()">Exportar por Región Excel</button>
- </div>
+  <p class="text-slate-400 mb-8 font-medium italic">Genera reportes masivos por región con un solo clic.</p>
 
- <div id="status"></div>
+  <div class="export-buttons">
+    <button onclick="exportRegionPDF()">Exportar Región PDF</button>
+    <button onclick="exportRegionExcel()">Exportar por Región Excel</button>
+  </div>
 
+  <div id="status">Esperando acción...</div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
+// --- TU LÓGICA DE JAVASCRIPT ORIGINAL ---
+
 const municipios = [
  {n:"Abasolo",lat:27.2,lon:-101.4}, {n:"Acuña",lat:29.3,lon:-101.0},
  {n:"Allende",lat:28.3,lon:-100.8}, {n:"Arteaga",lat:25.43,lon:-100.85},
@@ -61,44 +158,28 @@ const regiones = {
  "Norte": ["Acuña","Allende","Guerrero","Hidalgo","Jiménez","Morelos","Nava","Piedras Negras","Villa Unión","Zaragoza"]
 };
 
-// Convertir weathercode a texto
 function weatherDesc(code){
   const map = {
-    0:"Despejado",
-    1:"Mayormente despejado",
-    2:"Parcialmente nublado",
-    3:"Nublado",
-    45:"Niebla",
-    48:"Niebla con escarcha",
-    51:"Llovizna ligera", 53:"Llovizna moderada", 55:"Llovizna fuerte",
-    61:"Lluvia ligera",   63:"Lluvia moderada",   65:"Lluvia fuerte",
-    71:"Nevada ligera",   73:"Nevada moderada",   75:"Nevada fuerte",
-    95:"Tormenta",
-    96:"Tormenta con granizo",
-    99:"Tormenta fuerte con granizo"
+    0:"Despejado", 1:"Mayormente despejado", 2:"Parcialmente nublado", 3:"Nublado",
+    45:"Niebla", 48:"Niebla con escarcha", 51:"Llovizna ligera", 53:"Llovizna moderada",
+    55:"Llovizna fuerte", 61:"Lluvia ligera", 63:"Lluvia moderada", 65:"Lluvia fuerte",
+    71:"Nevada ligera", 73:"Nevada moderada", 75:"Nevada fuerte", 95:"Tormenta",
+    96:"Tormenta con granizo", 99:"Tormenta fuerte con granizo"
   };
   return map[code] || "Sin datos";
 }
 
 async function getWeather(lat, lon) {
-  const url =
-    `https://api.open-meteo.com/v1/forecast` +
-    `?latitude=${lat}&longitude=${lon}` +
-    `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max,weathercode` +
-    `&timezone=auto`;
-
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max,weathercode&timezone=auto`;
   const res = await fetch(url);
   return await res.json();
 }
 
-// ---------------- PDF POR REGIÓN ----------------
 async function exportRegionPDF(){
  const { jsPDF } = window.jspdf;
  const pdf = new jsPDF({unit:'pt', format:'letter'});
  const status=document.getElementById("status");
-
  const now = new Date().toLocaleString();
-
  let y=40;
  pdf.setFontSize(16);
  pdf.text("Clima del Día por Región – Coahuila",40,y); 
@@ -106,80 +187,50 @@ async function exportRegionPDF(){
  pdf.setFontSize(10);
  pdf.text("Generado: " + now,40,y);
  y+=22;
-
  for(const regionName of Object.keys(regiones)){
    pdf.setFontSize(14);
    pdf.text(regionName,40,y);
    y += 18;
-
    for(const muni of regiones[regionName]){
      const info = municipios.find(x => x.n === muni);
      if(!info) continue;
-
      status.innerText = `Obteniendo ${muni}...`;
      const data = await getWeather(info.lat, info.lon);
      const d = data.daily;
-
      const clima = weatherDesc(d.weathercode[0]);
-
-     const line =
-       `${muni} — Max ${d.temperature_2m_max[0]}°C | Min ${d.temperature_2m_min[0]}°C | ` +
-       `Lluvia ${d.precipitation_probability_max[0]}% | Viento ${d.windspeed_10m_max[0]} km/h | ${clima}`;
-
+     const line = `${muni} — Max ${d.temperature_2m_max[0]}°C | Min ${d.temperature_2m_min[0]}°C | Lluvia ${d.precipitation_probability_max[0]}% | Viento ${d.windspeed_10m_max[0]} km/h | ${clima}`;
      pdf.setFontSize(10);
      pdf.text(line, 48, y);
-
      y += 26;
      if(y > 720){ pdf.addPage(); y = 40; }
    }
-
    y += 12;
    if(y > 720){ pdf.addPage(); y = 40; }
  }
-
  pdf.save("clima_hoy_por_region.pdf");
- status.innerText = "PDF listo con fecha, hora y descripción del clima.";
+ status.innerText = "PDF listo.";
 }
 
-// ---------------- EXCEL POR REGIÓN ----------------
 async function exportRegionExcel(){
   const wb = XLSX.utils.book_new();
   const status = document.getElementById("status");
-
   const now = new Date().toLocaleString();
-
   for(const regionName of Object.keys(regiones)){
     const arr = [["Municipio","Temp Máx","Temp Min","Lluvia %","Viento km/h","Clima","Fecha de Generación"]];
     for(const muni of regiones[regionName]){
       const info = municipios.find(x => x.n === muni);
       if(!info) continue;
-
       status.innerText = `Obteniendo ${muni}...`;
-
       const data = await getWeather(info.lat, info.lon);
       const d = data.daily;
-
-      arr.push([
-        muni,
-        d.temperature_2m_max[0],
-        d.temperature_2m_min[0],
-        d.precipitation_probability_max[0],
-        d.windspeed_10m_max[0],
-        weatherDesc(d.weathercode[0]),
-        now
-      ]);
+      arr.push([muni, d.temperature_2m_max[0], d.temperature_2m_min[0], d.precipitation_probability_max[0], d.windspeed_10m_max[0], weatherDesc(d.weathercode[0]), now]);
     }
-
     const ws = XLSX.utils.aoa_to_sheet(arr);
     XLSX.utils.book_append_sheet(wb, ws, regionName.substring(0,30));
   }
-
   XLSX.writeFile(wb, "clima_hoy_por_region.xlsx");
-  status.innerText = "Excel listo con clima, fecha y hora.";
+  status.innerText = "Excel listo.";
 }
 </script>
-
-
-
 </body>
 </html>
